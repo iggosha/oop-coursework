@@ -14,6 +14,14 @@ public class Institute {
     // Содержит группы со студентами
     private List<Group> groups;
 
+    public Institute(String name, List<Department> departments, List<Group> groups) {
+        setGroups(groups);
+        setName(name);
+        setDepartments(departments);
+        departments.forEach(department -> department.setInstitute(this));
+        groups.forEach(group -> group.setInstitute(this));
+    }
+
     @Override
     public String toString() {
         String departmentsNames = departments != null && !departments.isEmpty() ?
@@ -27,10 +35,9 @@ public class Institute {
                         .collect(Collectors.joining(", "))
                 : "Нет групп";
 
-        return "Институт{" +
-                "название='" + name + '\'' +
-                ", кафедры=" + departmentsNames +
-                ", группы=" + groupsIds +
-                '}';
+        return "\nИнститут - " +
+                "Название : " + name +
+                ", Названия кафедр: " + departmentsNames +
+                ", Номера групп: " + groupsIds;
     }
 }

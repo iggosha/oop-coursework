@@ -15,6 +15,16 @@ public class Group {
     // Относится к институту
     private Institute institute;
 
+    public Group(String idNumber, Institute institute, String specialization, List<Student> students) {
+        setIdNumber(idNumber);
+        setInstitute(institute);
+        setSpecialization(specialization);
+        setStudents(students);
+
+        institute.getGroups().add(this);
+        students.forEach(student -> student.setGroup(this));
+    }
+
     @Override
     public String toString() {
         String studentsNames = students != null && !students.isEmpty() ?
@@ -26,11 +36,10 @@ public class Group {
                 institute.getName()
                 : "Нет института";
 
-        return "Группа{" +
-                "номер='" + idNumber + '\'' +
-                ", специализация='" + specialization + '\'' +
-                ", студенты=" + studentsNames +
-                ", институт=" + instituteName +
-                '}';
+        return "\nГруппа -" +
+                " Номер: " + idNumber +
+                ", Специализация: " + specialization +
+                ", Имена студентов: " + studentsNames +
+                ", Название института: " + instituteName;
     }
 }

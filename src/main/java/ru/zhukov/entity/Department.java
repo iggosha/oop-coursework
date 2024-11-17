@@ -14,6 +14,15 @@ public class Department {
     // Относится к институту
     private Institute institute;
 
+    public Department(Institute institute, String name, List<Teacher> teachers) {
+        setInstitute(institute);
+        setName(name);
+        setTeachers(teachers);
+
+        institute.getDepartments().add(this);
+        teachers.forEach(teacher -> teacher.setDepartment(this));
+    }
+
     @Override
     public String toString() {
         String teachersNames = teachers != null && !teachers.isEmpty() ?
@@ -25,10 +34,9 @@ public class Department {
                 institute.getName()
                 : "Нет института";
 
-        return "Кафедра{" +
-                "название='" + name + '\'' +
-                ", преподаватели=" + teachersNames +
-                ", институт=" + instituteName +
-                '}';
+        return "\nКафедра - " +
+                " Название: " + name +
+                ", Имена преподавателей: " + teachersNames +
+                ", Название института: " + instituteName;
     }
 }

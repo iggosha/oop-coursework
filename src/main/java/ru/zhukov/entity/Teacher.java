@@ -1,7 +1,11 @@
 package ru.zhukov.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Teacher extends Human {
 
@@ -10,6 +14,22 @@ public class Teacher extends Human {
     // Относится к кафедре
     private Department department;
 
+    public Teacher(String fullName,
+                   String phoneNumber,
+                   LocalDate dateOfBirth,
+                   String address,
+                   String academicDegree,
+                   Department department,
+                   String specialization) {
+        this.setFullName(fullName);
+        this.setPhoneNumber(phoneNumber);
+        this.setDateOfBirth(dateOfBirth);
+        this.setAddress(address);
+        this.setAcademicDegree(academicDegree);
+        this.setDepartment(department);
+        this.setSpecialization(specialization);
+        department.getTeachers().add(this);
+    }
 
     @Override
     public String toString() {
@@ -17,14 +37,13 @@ public class Teacher extends Human {
                 department.getName()
                 : "Нет кафедры";
 
-        return "Преподаватель{" +
-                "полное имя='" + getFullName() + '\'' +
-                ", номер телефона='" + getPhoneNumber() + '\'' +
-                ", дата рождения=" + getDateOfBirth() +
-                ", адрес='" + getAddress() + '\'' +
-                ", специализация='" + specialization + '\'' +
-                ", ученая степень='" + academicDegree + '\'' +
-                ", кафедра=" + departmentName +
-                '}';
+        return "\nПреподаватель - " +
+                "Полное имя: " + getFullName() +
+                ", Номер телефона: " + getPhoneNumber() +
+                ", Дата рождения: " + getDateOfBirth() +
+                ", Адрес: " + getAddress() +
+                ", Специализация: " + getSpecialization() +
+                ", Ученая степень: " + getAcademicDegree() +
+                ", Название кафедры: " + departmentName;
     }
 }
