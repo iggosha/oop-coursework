@@ -6,28 +6,30 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static ru.zhukov.StringConstants.*;
+
 public class EntityGenerator {
 
     private static final Random random = new Random();
-    private static final String[] FIRST_NAMES = {"Иван", "Петр", "Алексей", "Дмитрий", "Сергей"};
-    private static final String[] LAST_NAMES = {"Иванов", "Петров", "Сидоров", "Кузнецов", "Смирнов"};
-    private static final String[] SPECIALIZATIONS = {"Информатика", "Математика", "Физика", "Химия", "Биология"};
-    private static final String[] ACADEMIC_DEGREES = {"Доктор наук", "Кандидат наук", "Магистр", "Бакалавр"};
-    private static final String[] ADDRESSES = {"Москва", "Санкт-Петербург", "Казань", "Новосибирск", "Екатеринбург"};
-    private static final String[] INSTITUTE_NAMES = {"Институт инженерных и цифровых технологий",
-            "Юридический институт", "Педагогический институт", "Медицинский институт", "Институт наук о Земле"};
-    private static final String[] DEPARTMENT_NAMES = {"Кафедра математического и программного обеспечения информационных систем",
-            "Кафедра прикладной информатики и информационных технологий", "Кафедра материаловедения и нанотехнологий",
-            "Кафедра информационных и робототехнических систем", "Кафедра автоматизированных систем и технологий"};
-
 
     public Institute generateRandomInstitute() {
         Institute institute = createInstitute();
-        Department department = createDepartment(institute);
-        Group group = createGroup(institute);
-        createStudent(group);
-        createTeacher(department);
+        for (int i = 0; i < 2; i++) {
+            Department department = createDepartment(institute);
+            for (int j = 0; j < 2; j++) {
+                createTeacher(department);
+            }
+            Group group = createGroup(institute);
+            for (int j = 0; j < 2; j++) {
+                createStudent(group);
+            }
+        }
         return institute;
+    }
+
+    private Department createDepartment(Institute institute) {
+        String departmentName = getRandomArrayElement(DEPARTMENT_NAMES);
+        return new Department(institute, departmentName, new ArrayList<>());
     }
 
     private Teacher createTeacher(Department department) {
@@ -46,20 +48,15 @@ public class EntityGenerator {
         String studentPhoneNumber = generateRandomPhoneNumber();
         LocalDate studentDateOfBirth = generateRandomDateOfBirth();
         String studentAddress = getRandomArrayElement(ADDRESSES);
-        String studentIdNumber = String.valueOf(random.nextInt(100000) + 100000);
+        String studentIdNumber = String.valueOf(random.nextInt(100000) + 10000);
         return new Student(studentFullName, studentPhoneNumber, studentDateOfBirth,
                 studentAddress, group, studentIdNumber);
     }
 
     private Group createGroup(Institute institute) {
-        String groupIdNumber = String.valueOf(random.nextInt(100000) + 100000);
+        String groupIdNumber = String.valueOf(random.nextInt(100000) + 10000);
         String groupSpecialization = getRandomArrayElement(SPECIALIZATIONS);
         return new Group(groupIdNumber, institute, groupSpecialization, new ArrayList<>());
-    }
-
-    private Department createDepartment(Institute institute) {
-        String departmentName = getRandomArrayElement(DEPARTMENT_NAMES);
-        return new Department(institute, departmentName, new ArrayList<>());
     }
 
     private Institute createInstitute() {
@@ -79,7 +76,7 @@ public class EntityGenerator {
     }
 
     private String generateRandomPhoneNumber() {
-        return "+79" + random.nextInt(100000000);
+        return "+793" + random.nextInt(100000000);
     }
 
     private <T> T getRandomArrayElement(T[] array) {

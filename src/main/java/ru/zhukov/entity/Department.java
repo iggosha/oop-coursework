@@ -36,7 +36,7 @@ public class Department {
 
         return "\nКафедра - " +
                 " Название: " + name +
-                ", Имена преподавателей: " + teachersNames +
-                ", Название института: " + instituteName;
+                ", \nИмена преподавателей: " + teachersNames +
+                ", \nНазвание института: " + instituteName;
     }
 }

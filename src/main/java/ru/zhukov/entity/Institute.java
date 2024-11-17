@@ -36,8 +36,8 @@ public class Institute {
                 : "Нет групп";
 
         return "\nИнститут - " +
-                "Название : " + name +
-                ", Названия кафедр: " + departmentsNames +
-                ", Номера групп: " + groupsIds;
+                "Название: " + name +
+                ", \nНазвания кафедр: " + departmentsNames +
+                ", \nНомера групп: " + groupsIds;
     }
 }

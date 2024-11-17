@@ -39,7 +39,7 @@ public class Group {
         return "\nГруппа -" +
                 " Номер: " + idNumber +
                 ", Специализация: " + specialization +
-                ", Имена студентов: " + studentsNames +
-                ", Название института: " + instituteName;
+                ", \nИмена студентов: " + studentsNames +
+                ", \nНазвание института: " + instituteName;
     }
 }

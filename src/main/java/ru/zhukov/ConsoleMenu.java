@@ -6,41 +6,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ConsoleMenu {
+import static ru.zhukov.StringConstants.*;
 
-    private ConsoleMenu() {
-    }
+public class ConsoleMenu {
 
     private static final EntityGenerator entityGenerator = new EntityGenerator();
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Institute> institutes = new ArrayList<>();
-    private static final String SELECT_OPTION = "Выберите опцию: ";
-    private static final String WRONG_OPTION = "Неверный выбор. Пожалуйста, попробуйте снова.";
-    private static final String RETURN_TO_MENU = "0. Вернуться в меню";
-    private static final String RETURNING = "Возврат в меню";
 
     public static void startWithMainMenu() {
         System.out.println("Добро пожаловать в АИС 'Система образования'");
         boolean exit = false;
         while (!exit) {
-            System.out.println("""
-                    
-                    Главное меню:
-                    1. Добавить институт со случайными данными
-                    2. Просмотреть список институтов
-                    3. Завершить работу""");
-            System.out.print(SELECT_OPTION);
-            switch (handleIntInput()) {
-                case 1 -> {
-                    institutes.add(entityGenerator.generateRandomInstitute());
-                    System.out.println("Успешно сгенерирован случайный институт");
-                }
+            System.out.println(MAIN_MENU);
+            System.out.println(SELECT_OPTION);
+            int choice = handleIntInput();
+            switch (choice) {
+                case 0 -> exit = true;
+                case 1 -> addRandomInstitute();
                 case 2 -> showInstitutes();
-                case 3 -> exit = true;
                 default -> System.out.println(WRONG_OPTION);
             }
         }
         System.out.println("Спасибо, до свидания!");
+    }
+
+    private static void addRandomInstitute() {
+        institutes.add(entityGenerator.generateRandomInstitute());
+        System.out.println("Успешно сгенерирован случайный институт");
     }
 
     private static void showInstitutes() {
@@ -63,16 +56,14 @@ public class ConsoleMenu {
         boolean exit = false;
         while (!exit) {
             System.out.println(institute);
-            System.out.println("""
-                    1. Просмотреть кафедры
-                    2. Просмотреть группы
-                    3. Вернуться в главное меню""");
-            System.out.print(SELECT_OPTION);
-            int choice = handleIntInput(); // Считываем оставшийся символ новой строки
+            System.out.println(RETURN_TO_MENU);
+            System.out.println(INSTITUTE_MENU);
+            System.out.println(SELECT_OPTION);
+            int choice = handleIntInput();
             switch (choice) {
+                case 0 -> exit = true;
                 case 1 -> showDepartmentsOfInstitute(institute);
                 case 2 -> showGroupsOfInstitute(institute);
-                case 3 -> exit = true;
                 default -> System.out.println(WRONG_OPTION);
             }
         }
@@ -98,13 +89,13 @@ public class ConsoleMenu {
         boolean exit = false;
         while (!exit) {
             System.out.println(department);
-            System.out.println("1. Просмотреть преподавателей");
-            System.out.println("2. Вернуться в меню института");
-            System.out.print(SELECT_OPTION);
+            System.out.println(RETURN_TO_MENU);
+            System.out.println(DEPARTMENT_MENU);
+            System.out.println(SELECT_OPTION);
             int choice = handleIntInput();
             switch (choice) {
+                case 0 -> exit = true;
                 case 1 -> showTeachersOfDepartment(department);
-                case 2 -> exit = true;
                 default -> System.out.println(WRONG_OPTION);
             }
         }
@@ -130,13 +121,13 @@ public class ConsoleMenu {
         boolean exit = false;
         while (!exit) {
             System.out.println(group);
-            System.out.println("1. Просмотреть студентов");
-            System.out.println("2. Вернуться в меню института");
-            System.out.print(SELECT_OPTION);
+            System.out.println(RETURN_TO_MENU);
+            System.out.println(GROUP_MENU);
+            System.out.println(SELECT_OPTION);
             int choice = handleIntInput();
             switch (choice) {
+                case 0 -> exit = true;
                 case 1 -> showStudentsOfGroup(group);
-                case 2 -> exit = true;
                 default -> System.out.println(WRONG_OPTION);
             }
         }
@@ -155,6 +146,14 @@ public class ConsoleMenu {
     }
 
     private static int handleIntInput() {
-        return Integer.parseInt(scanner.nextLine());
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Пожалуйста, введите корректное число.");
+            return handleIntInput();
+        }
+    }
+
+    private ConsoleMenu() {
     }
 }
