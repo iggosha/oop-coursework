@@ -12,27 +12,27 @@ public class EntityGenerator {
 
     private static final Random random = new Random();
 
-    public Institute generateRandomInstitute() {
-        Institute institute = createInstitute();
+    public Institute generateFilledInstitute() {
+        Institute institute = generateInstitute();
         for (int i = 0; i < 2; i++) {
-            Department department = createDepartment(institute);
+            Department department = generateDepartment(institute);
             for (int j = 0; j < 2; j++) {
-                createTeacher(department);
+                generateTeacher(department);
             }
-            Group group = createGroup(institute);
+            Group group = generateGroup(institute);
             for (int j = 0; j < 2; j++) {
-                createStudent(group);
+                generateStudent(group);
             }
         }
         return institute;
     }
 
-    private Department createDepartment(Institute institute) {
+    public Department generateDepartment(Institute institute) {
         String departmentName = getRandomArrayElement(DEPARTMENT_NAMES);
         return new Department(institute, departmentName, new ArrayList<>());
     }
 
-    private Teacher createTeacher(Department department) {
+    public Teacher generateTeacher(Department department) {
         String teacherFullName = generateRandomName();
         String teacherPhoneNumber = generateRandomPhoneNumber();
         LocalDate teacherDateOfBirth = generateRandomDateOfBirth();
@@ -43,7 +43,7 @@ public class EntityGenerator {
                 teacherAddress, teacherAcademicDegree, department, teacherSpecialization);
     }
 
-    private Student createStudent(Group group) {
+    public Student generateStudent(Group group) {
         String studentFullName = generateRandomName();
         String studentPhoneNumber = generateRandomPhoneNumber();
         LocalDate studentDateOfBirth = generateRandomDateOfBirth();
@@ -53,33 +53,33 @@ public class EntityGenerator {
                 studentAddress, group, studentIdNumber);
     }
 
-    private Group createGroup(Institute institute) {
+    public Group generateGroup(Institute institute) {
         String groupIdNumber = String.valueOf(random.nextInt(100000) + 10000);
         String groupSpecialization = getRandomArrayElement(SPECIALIZATIONS);
         return new Group(groupIdNumber, institute, groupSpecialization, new ArrayList<>());
     }
 
-    private Institute createInstitute() {
+    public Institute generateInstitute() {
         String instituteName = getRandomArrayElement(INSTITUTE_NAMES);
         return new Institute(instituteName, new ArrayList<>(), new ArrayList<>());
     }
 
-    private String generateRandomName() {
+    public String generateRandomName() {
         return getRandomArrayElement(FIRST_NAMES) + " " + getRandomArrayElement(LAST_NAMES);
     }
 
-    private LocalDate generateRandomDateOfBirth() {
+    public LocalDate generateRandomDateOfBirth() {
         int year = 1980 + random.nextInt(25);
         int month = 1 + random.nextInt(12);
         int day = 1 + random.nextInt(28);
         return LocalDate.of(year, month, day);
     }
 
-    private String generateRandomPhoneNumber() {
+    public String generateRandomPhoneNumber() {
         return "+793" + random.nextInt(100000000);
     }
 
-    private <T> T getRandomArrayElement(T[] array) {
+    public <T> T getRandomArrayElement(T[] array) {
         return array[random.nextInt(array.length)];
     }
 }
