@@ -1,4 +1,4 @@
-package ru.zhukov;
+package ru.zhukov.manager;
 
 import ru.zhukov.entity.*;
 
@@ -6,9 +6,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static ru.zhukov.StringConstants.*;
+import static ru.zhukov.manager.GenerationConstants.*;
 
-public class EntityGenerator {
+public class GenerationManager {
 
     private static final Random random = new Random();
 
@@ -27,9 +27,20 @@ public class EntityGenerator {
         return institute;
     }
 
+    public Institute generateInstitute() {
+        String instituteName = getRandomArrayElement(INSTITUTE_NAMES);
+        return new Institute(instituteName, new ArrayList<>(), new ArrayList<>());
+    }
+
     public Department generateDepartment(Institute institute) {
         String departmentName = getRandomArrayElement(DEPARTMENT_NAMES);
         return new Department(institute, departmentName, new ArrayList<>());
+    }
+
+    public Group generateGroup(Institute institute) {
+        String groupIdNumber = String.valueOf(random.nextInt(100000) + 10000);
+        String groupSpecialization = getRandomArrayElement(SPECIALIZATIONS);
+        return new Group(groupIdNumber, institute, groupSpecialization, new ArrayList<>());
     }
 
     public Teacher generateTeacher(Department department) {
@@ -51,17 +62,6 @@ public class EntityGenerator {
         String studentIdNumber = String.valueOf(random.nextInt(100000) + 10000);
         return new Student(studentFullName, studentPhoneNumber, studentDateOfBirth,
                 studentAddress, group, studentIdNumber);
-    }
-
-    public Group generateGroup(Institute institute) {
-        String groupIdNumber = String.valueOf(random.nextInt(100000) + 10000);
-        String groupSpecialization = getRandomArrayElement(SPECIALIZATIONS);
-        return new Group(groupIdNumber, institute, groupSpecialization, new ArrayList<>());
-    }
-
-    public Institute generateInstitute() {
-        String instituteName = getRandomArrayElement(INSTITUTE_NAMES);
-        return new Institute(instituteName, new ArrayList<>(), new ArrayList<>());
     }
 
     public String generateRandomName() {

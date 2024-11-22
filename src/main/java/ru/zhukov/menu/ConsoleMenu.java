@@ -1,17 +1,21 @@
-package ru.zhukov;
+package ru.zhukov.menu;
 
 import ru.zhukov.entity.*;
+import ru.zhukov.manager.EditingManager;
+import ru.zhukov.manager.GenerationManager;
+import ru.zhukov.manager.RemovingManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import static ru.zhukov.StringConstants.*;
+import static ru.zhukov.Main.scanner;
+import static ru.zhukov.menu.MenuConstants.*;
 
 public class ConsoleMenu {
 
-    private static final EntityGenerator entityGenerator = new EntityGenerator();
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final GenerationManager generationManager = new GenerationManager();
+    private static final RemovingManager removingManager = new RemovingManager();
+    private static final EditingManager editingManager = new EditingManager();
     private static final List<Institute> institutes = new ArrayList<>();
 
     public static void startWithMainMenu() {
@@ -23,12 +27,12 @@ public class ConsoleMenu {
             switch (choice) {
                 case 0 -> exit = true;
                 case 1 -> {
-                    Institute institute = entityGenerator.generateFilledInstitute();
+                    Institute institute = generationManager.generateFilledInstitute();
                     institutes.add(institute);
                     System.out.println("Успешно сгенерирован случайный " + institute.getName());
                 }
                 case 2 -> showInstitutes();
-                default -> System.out.println(WRONG_OPTION);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
         System.out.println("Спасибо, до свидания!");
@@ -39,13 +43,16 @@ public class ConsoleMenu {
         for (int i = 0; i < institutes.size(); i++) {
             System.out.println((i + 1) + ". " + institutes.get(i).getName());
         }
+        if (institutes.isEmpty()) {
+            System.err.println("Список институтов пуст");
+        }
         int choice = handleIntInput();
         if (choice == 0) {
             System.out.println(RETURNING);
         } else if (choice > 0 && choice <= institutes.size()) {
             showInstituteDetails(institutes.get(choice - 1));
         } else {
-            System.out.println(WRONG_OPTION);
+            System.err.println(WRONG_OPTION);
         }
     }
 
@@ -60,7 +67,8 @@ public class ConsoleMenu {
                 case 0 -> exit = true;
                 case 1 -> showDepartmentsMenu(institute);
                 case 2 -> showGroupsMenu(institute);
-                default -> System.out.println(WRONG_OPTION);
+                case 3 -> editingManager.editInstitute(institute);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
     }
@@ -68,6 +76,10 @@ public class ConsoleMenu {
     private static void showDepartmentsMenu(Institute institute) {
         boolean exit = false;
         while (!exit) {
+            System.out.println();
+            for (int i = 0; i < institute.getDepartments().size(); i++) {
+                System.out.println(institute.getDepartments().get(i).getName());
+            }
             System.out.println(RETURN_TO_MENU);
             System.out.println(DEPARTMENT_MANAGEMENT_MENU);
             int choice = handleIntInput();
@@ -75,11 +87,11 @@ public class ConsoleMenu {
                 case 0 -> exit = true;
                 case 1 -> showDepartmentsOfInstitute(institute);
                 case 2 -> {
-                    Department department = entityGenerator.generateDepartment(institute);
+                    Department department = generationManager.generateDepartment(institute);
                     System.out.println("Кафедра " + department.getName() + " успешно добавлена");
                 }
-                case 3 -> removeDepartmentFromInstitute(institute);
-                default -> System.out.println(WRONG_OPTION);
+                case 3 -> removingManager.removeDepartmentFromInstitute(institute);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
     }
@@ -87,6 +99,10 @@ public class ConsoleMenu {
     private static void showGroupsMenu(Institute institute) {
         boolean exit = false;
         while (!exit) {
+            System.out.println();
+            for (int i = 0; i < institute.getGroups().size(); i++) {
+                System.out.println(institute.getGroups().get(i).getIdNumber());
+            }
             System.out.println(RETURN_TO_MENU);
             System.out.println(GROUP_MANAGEMENT_MENU);
             int choice = handleIntInput();
@@ -94,11 +110,11 @@ public class ConsoleMenu {
                 case 0 -> exit = true;
                 case 1 -> showGroupsOfInstitute(institute);
                 case 2 -> {
-                    Group group = entityGenerator.generateGroup(institute);
+                    Group group = generationManager.generateGroup(institute);
                     System.out.println("Группа " + group.getIdNumber() + " успешно добавлена");
                 }
-                case 3 -> removeGroupFromInstitute(institute);
-                default -> System.out.println(WRONG_OPTION);
+                case 3 -> removingManager.removeGroupFromInstitute(institute);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
     }
@@ -114,7 +130,7 @@ public class ConsoleMenu {
         } else if (choice > 0 && choice <= institute.getDepartments().size()) {
             showDepartmentDetails(institute.getDepartments().get(choice - 1));
         } else {
-            System.out.println(WRONG_OPTION);
+            System.err.println(WRONG_OPTION);
         }
     }
 
@@ -129,11 +145,12 @@ public class ConsoleMenu {
                 case 0 -> exit = true;
                 case 1 -> showTeachersOfDepartment(department);
                 case 2 -> {
-                    Teacher teacher = entityGenerator.generateTeacher(department);
+                    Teacher teacher = generationManager.generateTeacher(department);
                     System.out.println("Преподаватель " + teacher.getFullName() + " успешно добавлен");
                 }
-                case 3 -> removeTeacherFromDepartment(department);
-                default -> System.out.println(WRONG_OPTION);
+                case 3 -> removingManager.removeTeacherFromDepartment(department);
+                case 4 -> editingManager.editDepartment(department);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
     }
@@ -149,7 +166,7 @@ public class ConsoleMenu {
         } else if (choice > 0 && choice <= institute.getGroups().size()) {
             showGroupDetails(institute.getGroups().get(choice - 1));
         } else {
-            System.out.println(WRONG_OPTION);
+            System.err.println(WRONG_OPTION);
         }
     }
 
@@ -164,92 +181,74 @@ public class ConsoleMenu {
                 case 0 -> exit = true;
                 case 1 -> showStudentsOfGroup(group);
                 case 2 -> {
-                    Student student = entityGenerator.generateStudent(group);
-                    System.out.println("Студент" + student.getFullName() + " успешно добавлен");
+                    Student student = generationManager.generateStudent(group);
+                    System.out.println("Студент " + student.getFullName() + " успешно добавлен");
                 }
-                case 3 -> removeStudentFromGroup(group);
-                default -> System.out.println(WRONG_OPTION);
+                case 3 -> removingManager.removeStudentFromGroup(group);
+                case 4 -> editingManager.editGroup(group);
+                default -> System.err.println(WRONG_OPTION);
+            }
+        }
+    }
+
+
+    private static void showTeachersOfDepartment(Department department) {
+        System.out.println(RETURN_TO_MENU);
+        for (int i = 0; i < department.getTeachers().size(); i++) {
+            System.out.println((i + 1) + ". " + department.getTeachers().get(i).getFullName());
+        }
+        int choice = handleIntInput();
+        if (choice == 0) {
+            System.out.println(RETURNING);
+        } else if (choice > 0 && choice <= department.getTeachers().size()) {
+            showTeacherDetails(department.getTeachers().get(choice - 1));
+        } else {
+            System.err.println(WRONG_OPTION);
+        }
+    }
+
+    private static void showTeacherDetails(Teacher teacher) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println(teacher);
+            System.out.println(RETURN_TO_MENU);
+            System.out.println(TEACHER_MENU);
+            int choice = handleIntInput();
+            switch (choice) {
+                case 0 -> exit = true;
+                case 1 -> editingManager.editTeacher(teacher);
+                default -> System.err.println(WRONG_OPTION);
             }
         }
     }
 
     private static void showStudentsOfGroup(Group group) {
-        for (Student student : group.getStudents()) {
-            System.out.println(student);
-        }
-    }
-
-    private static void showTeachersOfDepartment(Department department) {
-        for (Teacher teacher : department.getTeachers()) {
-            System.out.println(teacher);
-        }
-    }
-
-    private static void removeDepartmentFromInstitute(Institute institute) {
-        System.out.println("Выберите кафедру для удаления:");
-        for (int i = 0; i < institute.getDepartments().size(); i++) {
-            System.out.println((i + 1) + ". " + institute.getDepartments().get(i).getName());
-        }
         System.out.println(RETURN_TO_MENU);
-        int choice = handleIntInput();
-        if (choice == 0) {
-            System.out.println(RETURNING);
-        } else if (choice > 0 && choice <= institute.getDepartments().size()) {
-            institute.getDepartments().remove(choice - 1);
-            System.out.println("Кафедра успешно удалена");
-        } else {
-            System.out.println(WRONG_OPTION);
-        }
-    }
-
-    private static void removeGroupFromInstitute(Institute institute) {
-        System.out.println("Выберите группу для удаления:");
-        for (int i = 0; i < institute.getGroups().size(); i++) {
-            System.out.println((i + 1) + ". " + institute.getGroups().get(i).getIdNumber());
-        }
-        System.out.println(RETURN_TO_MENU);
-        int choice = handleIntInput();
-        if (choice == 0) {
-            System.out.println(RETURNING);
-        } else if (choice > 0 && choice <= institute.getGroups().size()) {
-            institute.getGroups().remove(choice - 1);
-            System.out.println("Группа успешно удалена");
-        } else {
-            System.out.println(WRONG_OPTION);
-        }
-    }
-
-    private static void removeTeacherFromDepartment(Department department) {
-        System.out.println("Выберите преподавателя для удаления:");
-        for (int i = 0; i < department.getTeachers().size(); i++) {
-            System.out.println((i + 1) + ". " + department.getTeachers().get(i).getFullName());
-        }
-        System.out.println(RETURN_TO_MENU);
-        int choice = handleIntInput();
-        if (choice == 0) {
-            System.out.println(RETURNING);
-        } else if (choice > 0 && choice <= department.getTeachers().size()) {
-            department.getTeachers().remove(choice - 1);
-            System.out.println("Преподаватель успешно удален");
-        } else {
-            System.out.println(WRONG_OPTION);
-        }
-    }
-
-    private static void removeStudentFromGroup(Group group) {
-        System.out.println("Выберите студента для удаления:");
         for (int i = 0; i < group.getStudents().size(); i++) {
             System.out.println((i + 1) + ". " + group.getStudents().get(i).getFullName());
         }
-        System.out.println(RETURN_TO_MENU);
         int choice = handleIntInput();
         if (choice == 0) {
             System.out.println(RETURNING);
         } else if (choice > 0 && choice <= group.getStudents().size()) {
-            group.getStudents().remove(choice - 1);
-            System.out.println("Студент успешно удален");
+            showStudentDetails(group.getStudents().get(choice - 1));
         } else {
-            System.out.println(WRONG_OPTION);
+            System.err.println(WRONG_OPTION);
+        }
+    }
+
+    private static void showStudentDetails(Student student) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println(student);
+            System.out.println(RETURN_TO_MENU);
+            System.out.println(STUDENT_MENU);
+            int choice = handleIntInput();
+            switch (choice) {
+                case 0 -> exit = true;
+                case 1 -> editingManager.editStudent(student);
+                default -> System.err.println(WRONG_OPTION);
+            }
         }
     }
 
@@ -258,7 +257,7 @@ public class ConsoleMenu {
         try {
             return Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.println("Пожалуйста, введите корректное число.");
+            System.err.println("Пожалуйста, введите корректное число.");
             return handleIntInput();
         }
     }
