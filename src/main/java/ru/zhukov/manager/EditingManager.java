@@ -6,20 +6,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import static ru.zhukov.Main.scanner;
+import static ru.zhukov.manager.InputConstants.*;
 import static ru.zhukov.menu.MenuConstants.SKIP_INPUT;
 
 public class EditingManager {
 
     public void editGroup(Group group) {
         System.out.println(SKIP_INPUT);
-        System.out.println("Введите новый номер группы:");
+        System.out.println(INPUT_GROUP_ID_NUMBER);
         String newIdNumber = scanner.nextLine();
         if (!newIdNumber.isBlank()) {
             group.setIdNumber(newIdNumber);
             System.out.println("Номер группы успешно изменен на " + newIdNumber);
         }
 
-        System.out.println("Введите новую специализацию группы:");
+        System.out.println(INPUT_GROUP_SPECIALIZATION);
         String newSpecialization = scanner.nextLine();
         if (!newSpecialization.isBlank()) {
             group.setSpecialization(newSpecialization);
@@ -29,7 +30,7 @@ public class EditingManager {
 
     public void editInstitute(Institute institute) {
         System.out.println(SKIP_INPUT);
-        System.out.println("Введите новое название института:");
+        System.out.println(INPUT_INSTITUTE_NAME);
         String newName = scanner.nextLine();
         if (!newName.isBlank()) {
             institute.setName(newName);
@@ -39,7 +40,7 @@ public class EditingManager {
 
     public void editDepartment(Department department) {
         System.out.println(SKIP_INPUT);
-        System.out.println("Введите новое название кафедры:");
+        System.out.println(INPUT_DEPARTMENT_NAME);
         String newName = scanner.nextLine();
         if (!newName.isBlank()) {
             department.setName(newName);
@@ -49,38 +50,35 @@ public class EditingManager {
 
     public void editStudent(Student student) {
         System.out.println(SKIP_INPUT);
-        System.out.println("Введите новое полное имя студента:");
-
+        System.out.println(INPUT_STUDENT_FULL_NAME);
         String newFullName = scanner.nextLine();
-
         if (!newFullName.isBlank()) {
             student.setFullName(newFullName);
             System.out.println("Полное имя студента успешно изменено на " + newFullName);
         }
 
-        System.out.println("Введите новый номер телефона студента:");
+        System.out.println(INPUT_STUDENT_PHONE_NUMBER);
         String newPhoneNumber = scanner.nextLine();
         if (!newPhoneNumber.isBlank()) {
             student.setPhoneNumber(newPhoneNumber);
             System.out.println("Номер телефона студента успешно изменен на " + newPhoneNumber);
         }
 
-        System.out.println("Введите новую дату рождения студента (ГГГГ-ММ-ДД):");
+        System.out.println(INPUT_STUDENT_DATE_OF_BIRTH);
         LocalDate newDateOfBirth = handleDateInput();
         if (newDateOfBirth != null) {
             student.setDateOfBirth(newDateOfBirth);
             System.out.println("Дата рождения студента успешно изменена на " + newDateOfBirth);
         }
 
-        System.out.println("Введите новый адрес студента:");
+        System.out.println(INPUT_STUDENT_ADDRESS);
         String newAddress = scanner.nextLine();
-
         if (!newAddress.isBlank()) {
             student.setAddress(newAddress);
             System.out.println("Адрес студента успешно изменен на " + newAddress);
         }
 
-        System.out.println("Введите новый номер зачётки студента:");
+        System.out.println(INPUT_STUDENT_ID_NUMBER);
         String newIdNumber = scanner.nextLine();
         if (!newIdNumber.isBlank()) {
             student.setIdNumber(newIdNumber);
@@ -90,42 +88,42 @@ public class EditingManager {
 
     public void editTeacher(Teacher teacher) {
         System.out.println(SKIP_INPUT);
-        System.out.println("Введите новое полное имя преподавателя:");
+        System.out.println(INPUT_TEACHER_FULL_NAME);
         String newFullName = scanner.nextLine();
         if (!newFullName.isBlank()) {
             teacher.setFullName(newFullName);
             System.out.println("Полное имя преподавателя успешно изменено на " + newFullName);
         }
 
-        System.out.println("Введите новый номер телефона преподавателя:");
+        System.out.println(INPUT_TEACHER_PHONE_NUMBER);
         String newPhoneNumber = scanner.nextLine();
         if (!newPhoneNumber.isBlank()) {
             teacher.setPhoneNumber(newPhoneNumber);
             System.out.println("Номер телефона преподавателя успешно изменен на " + newPhoneNumber);
         }
 
-        System.out.println("Введите новую дату рождения преподавателя (ГГГГ-ММ-ДД):");
+        System.out.println(INPUT_TEACHER_DATE_OF_BIRTH);
         LocalDate newDateOfBirth = handleDateInput();
         if (newDateOfBirth != null) {
             teacher.setDateOfBirth(newDateOfBirth);
             System.out.println("Дата рождения преподавателя успешно изменена на " + newDateOfBirth);
         }
 
-        System.out.println("Введите новый адрес преподавателя:");
+        System.out.println(INPUT_TEACHER_ADDRESS);
         String newAddress = scanner.nextLine();
         if (!newAddress.isBlank()) {
             teacher.setAddress(newAddress);
             System.out.println("Адрес преподавателя успешно изменен на " + newAddress);
         }
 
-        System.out.println("Введите новую специализацию преподавателя:");
+        System.out.println(INPUT_TEACHER_SPECIALIZATION);
         String newSpecialization = scanner.nextLine();
         if (!newSpecialization.isBlank()) {
             teacher.setSpecialization(newSpecialization);
             System.out.println("Специализация преподавателя успешно изменена на " + newSpecialization);
         }
 
-        System.out.println("Введите новую ученую степень преподавателя:");
+        System.out.println(INPUT_TEACHER_ACADEMIC_DEGREE);
         String newAcademicDegree = scanner.nextLine();
         if (!newAcademicDegree.isBlank()) {
             teacher.setAcademicDegree(newAcademicDegree);
@@ -141,7 +139,7 @@ public class EditingManager {
             }
             return LocalDate.parse(updatedDateStringValue);
         } catch (DateTimeParseException e) {
-            System.err.println("Пожалуйста, введите корректную дату.");
+            System.err.println(INPUT_CORRECT_DATE);
             return handleDateInput();
         }
     }

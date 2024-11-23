@@ -1,6 +1,7 @@
 package ru.zhukov.menu;
 
 import ru.zhukov.entity.*;
+import ru.zhukov.manager.CreationManager;
 import ru.zhukov.manager.EditingManager;
 import ru.zhukov.manager.GenerationManager;
 import ru.zhukov.manager.RemovingManager;
@@ -16,6 +17,7 @@ public class ConsoleMenu {
     private static final GenerationManager generationManager = new GenerationManager();
     private static final RemovingManager removingManager = new RemovingManager();
     private static final EditingManager editingManager = new EditingManager();
+    private static final CreationManager creationManager = new CreationManager();
     private static final List<Institute> institutes = new ArrayList<>();
 
     public static void startWithMainMenu() {
@@ -31,7 +33,13 @@ public class ConsoleMenu {
                     institutes.add(institute);
                     System.out.println("Успешно сгенерирован случайный " + institute.getName());
                 }
-                case 2 -> showInstitutes();
+                case 2 -> {
+                    Institute institute = creationManager.createInstitute();
+                    institutes.add(institute);
+                    System.out.println("Успешно создан " + institute.getName());
+                }
+                case 3 -> showInstitutes();
+                case 4 -> removingManager.removeInstituteFromList(institutes);
                 default -> System.err.println(WRONG_OPTION);
             }
         }
@@ -86,11 +94,9 @@ public class ConsoleMenu {
             switch (choice) {
                 case 0 -> exit = true;
                 case 1 -> showDepartmentsOfInstitute(institute);
-                case 2 -> {
-                    Department department = generationManager.generateDepartment(institute);
-                    System.out.println("Кафедра " + department.getName() + " успешно добавлена");
-                }
-                case 3 -> removingManager.removeDepartmentFromInstitute(institute);
+                case 2 -> generationManager.generateDepartment(institute);
+                case 3 -> creationManager.createDepartment(institute);
+                case 4 -> removingManager.removeDepartmentFromInstitute(institute);
                 default -> System.err.println(WRONG_OPTION);
             }
         }
@@ -111,9 +117,13 @@ public class ConsoleMenu {
                 case 1 -> showGroupsOfInstitute(institute);
                 case 2 -> {
                     Group group = generationManager.generateGroup(institute);
-                    System.out.println("Группа " + group.getIdNumber() + " успешно добавлена");
+                    System.out.println("Группа " + group.getIdNumber() + " успешно сгенерирована");
                 }
-                case 3 -> removingManager.removeGroupFromInstitute(institute);
+                case 3 -> {
+                    Group group = creationManager.createGroup(institute);
+                    System.out.println("Группа " + group.getIdNumber() + " успешно создана");
+                }
+                case 4 -> removingManager.removeGroupFromInstitute(institute);
                 default -> System.err.println(WRONG_OPTION);
             }
         }
@@ -146,10 +156,14 @@ public class ConsoleMenu {
                 case 1 -> showTeachersOfDepartment(department);
                 case 2 -> {
                     Teacher teacher = generationManager.generateTeacher(department);
-                    System.out.println("Преподаватель " + teacher.getFullName() + " успешно добавлен");
+                    System.out.println("Преподаватель " + teacher.getFullName() + " успешно сгенерирован");
                 }
-                case 3 -> removingManager.removeTeacherFromDepartment(department);
-                case 4 -> editingManager.editDepartment(department);
+                case 3 -> {
+                    Teacher teacher = creationManager.createTeacher(department);
+                    System.out.println("Преподаватель " + teacher.getFullName() + " успешно создан");
+                }
+                case 4 -> removingManager.removeTeacherFromDepartment(department);
+                case 5 -> editingManager.editDepartment(department);
                 default -> System.err.println(WRONG_OPTION);
             }
         }
@@ -182,15 +196,18 @@ public class ConsoleMenu {
                 case 1 -> showStudentsOfGroup(group);
                 case 2 -> {
                     Student student = generationManager.generateStudent(group);
-                    System.out.println("Студент " + student.getFullName() + " успешно добавлен");
+                    System.out.println("Студент " + student.getFullName() + " успешно сгенерирован");
                 }
-                case 3 -> removingManager.removeStudentFromGroup(group);
-                case 4 -> editingManager.editGroup(group);
+                case 3 -> {
+                    Student student = creationManager.createStudent(group);
+                    System.out.println("Студент " + student.getFullName() + " успешно создан");
+                }
+                case 4 -> removingManager.removeStudentFromGroup(group);
+                case 5 -> editingManager.editGroup(group);
                 default -> System.err.println(WRONG_OPTION);
             }
         }
     }
-
 
     private static void showTeachersOfDepartment(Department department) {
         System.out.println(RETURN_TO_MENU);

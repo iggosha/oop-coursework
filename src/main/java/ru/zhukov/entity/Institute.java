@@ -28,7 +28,7 @@ public class Institute {
                 departments.stream()
                         .map(Department::getName)
                         .collect(Collectors.joining(", "))
-                : "нет кафедр";
+                : "Нет кафедр";
         String groupsIds = groups != null && !groups.isEmpty() ?
                 groups.stream()
                         .map(Group::getIdNumber)

@@ -4,10 +4,29 @@ import ru.zhukov.entity.Department;
 import ru.zhukov.entity.Group;
 import ru.zhukov.entity.Institute;
 
+import java.util.List;
+
 import static ru.zhukov.Main.scanner;
 import static ru.zhukov.menu.MenuConstants.*;
 
 public class RemovingManager {
+
+    public void removeInstituteFromList(List<Institute> instituteList) {
+        System.out.println("Выберите институт для удаления:");
+        System.out.println(RETURN_TO_MENU);
+        for (int i = 0; i < instituteList.size(); i++) {
+            System.out.println((i + 1) + ". " + instituteList.get(i).getName());
+        }
+        int choice = handleIntInput();
+        if (choice == 0) {
+            System.out.println(RETURNING);
+        } else if (choice > 0 && choice <= instituteList.size()) {
+            instituteList.remove(choice - 1);
+            System.out.println("Институт успешно удалён");
+        } else {
+            System.out.println(WRONG_OPTION);
+        }
+    }
 
     public void removeGroupFromInstitute(Institute institute) {
         System.out.println("Выберите группу для удаления:");
